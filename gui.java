@@ -1,36 +1,37 @@
 package test;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 import javax.swing.*;
 
 public class gui extends JFrame {
-	private JButton reg;
-	private JButton custom;
+	private JComboBox box;
+	private JLabel picture;
+	
+	private static String[] filename = {"b.png","x.jpg"};
+	private Icon[] pics = {new ImageIcon(getClass().getResource(filename[0])), new ImageIcon(getClass().getResource(filename[1]))};
 	
 	public gui() {
-		super("The title");
+		super("The Title");
 		setLayout(new FlowLayout());
 		
-		reg = new JButton("reg Button");
-		add(reg);
+		// automatically puts filename list in a combo box
+		box = new JComboBox(filename);
 		
-		Icon b = new ImageIcon(getClass().getResource("b.png"));
-		Icon x = new ImageIcon(getClass().getResource("x.jpg"));
-		custom = new JButton("Custom", b);
-		custom.setRolloverIcon(x);
-		add(custom);
+		box.addItemListener(
+				new ItemListener() {
+					@Override
+					public void itemStateChanged(ItemEvent event) {
+						// Whatever you select
+						if(event.getStateChange()==ItemEvent.SELECTED)
+							picture.setIcon(pics[box.getSelectedIndex()]);
+					}
+				}
+		);
 		
-		HandlerClass handler = new HandlerClass();
-		reg.addActionListener(handler);
-		custom.addActionListener(handler);
-	}
-	
-	private class HandlerClass implements ActionListener{
-		public void actionPerformed(ActionEvent event) {
-			JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
-		}
+		add(box);
+		picture=new JLabel(pics[0]);
+		add(picture);
 	}
 }
